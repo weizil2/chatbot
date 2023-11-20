@@ -48,7 +48,7 @@ def update_typing_animation(placeholder, current_dots):
     current_dots (int): Current number of dots in the animation.
     """
     num_dots = (current_dots % 6) + 1  # Cycle through 1 to 3 dots
-    placeholder.markdown("回答生成中" + "." * num_dots)
+    placeholder.markdown("回答生成中，请耐心等待" + "." * num_dots)
     return num_dots
     
 # Handling message input and response
