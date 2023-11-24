@@ -26,7 +26,7 @@ if "messages" not in st.session_state:
 
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+        st.markdown(message["content"], unsafe_allow_html=True)
 
 
 def local_css(file_name):
@@ -51,8 +51,9 @@ def update_typing_animation(placeholder, current_dots):
     return num_dots
 
 
+
 # Handling message input and response
-max_messages = 50  # 10 iterations of conversation (user + assistant)
+max_messages = 30  # 10 iterations of conversation (user + assistant)
 
 if len(st.session_state.messages) < max_messages:
     
@@ -75,42 +76,7 @@ if len(st.session_state.messages) < max_messages:
             waiting_message = st.empty()  # Create a new placeholder for the waiting message
             dots = 0
 
-            # Create a message in the thread
-            message = client.beta.threads.messages.create(
-                        thread_id=st.session_state.thread_id,
-                        role="user",
-                        content=user_input
-                    )
-
-            # Create and check run status
-            run = client.beta.threads.runs.create(
-                  thread_id=st.session_state.thread_id,
-                  assistant_id=assistant_id,
-                  # instructions="Forget all your previous instructions, and follow strictly the following 3 rules: 1. when given the same input, always output the same response. set your temperature parameter in your chat completion function to be 0.1. 2. When engaging in a conversation, your primary goal is to foster elaboration by posing a question 3. When presenting solutions or suggestions, offer three succinct bullet points, with a total word count of fewer than 180 Chinese characters."
-                )
-
-            # Wait until run is complete
-            while True:
-                run_status = client.beta.threads.runs.retrieve(
-                          thread_id=st.session_state.thread_id,
-                          run_id=run.id
-                        )
-                if run_status.status == "completed":
-                    break
-                dots = update_typing_animation(waiting_message, dots)  # Update typing animation
-                time.sleep(0.5) 
-
-            # Retrieve and display messages
-            messages = client.beta.threads.messages.list(
-                    thread_id=st.session_state.thread_id
-                    )
-
-            full_response = messages.data[0].content[0].text.value
-
-
-
-
-
+#------------------------------------------------------------------------------------------------------------------------------#
             def format_response(response):
                 """
                 Formats the response to handle bullet points and new lines.
@@ -131,35 +97,57 @@ if len(st.session_state.messages) < max_messages:
                 formatted_response = '\n'.join(formatted_lines)
 
                 return formatted_response.strip()
+        
+            import time
+            max_attempts = 2
+            attempt = 0
+            while attempt < max_attempts:
+                try:
+                    update_typing_animation(waiting_message, 5)  # Update typing animation
+                    # raise Exception("test")
+                    message = client.beta.threads.messages.create(thread_id=st.session_state.thread_id,role="user",content=user_input)
+                    run = client.beta.threads.runs.create(thread_id=st.session_state.thread_id,assistant_id=assistant_id,)
+                    
+                    # Wait until run is complete
+                    while True:
+                        run_status = client.beta.threads.runs.retrieve(thread_id=st.session_state.thread_id,run_id=run.id)
+                        if run_status.status == "completed":
+                            break
+                        dots = update_typing_animation(waiting_message, dots)  # Update typing animation
+                        time.sleep(0.3) 
+                    # Retrieve and display messages
+                    messages = client.beta.threads.messages.list(thread_id=st.session_state.thread_id)
+                    full_response = messages.data[0].content[0].text.value
+                    full_response = format_response(full_response)  # Format for bullet points
+                    chars = list(full_response)
+                    # speed = 20  # Display 5 Chinese characters per second
+                    delay_per_char = 1.0 / speed
+                    displayed_message = ""
+                    waiting_message.empty()
+                    for char in chars:
+                        displayed_message += char
+                        message_placeholder.markdown(displayed_message)
+                        time.sleep(delay_per_char)  # Wait for calculated delay time
+                    break
+                except:
+                    attempt += 1
+                    if attempt < max_attempts:
+                        print(f"An error occurred. Retrying in 5 seconds...")
+                        time.sleep(5)
+                    else:
+                        error_message_html = """
+                            <div style='display: inline-block; border:2px solid red; padding: 4px; border-radius: 5px; margin-bottom: 20px; color: red;'>
+                                <strong>网络错误:</strong> 请重试。
+                            </div>
+                            """
+                        full_response = error_message_html
+                        waiting_message.empty()
+                        message_placeholder.markdown(full_response, unsafe_allow_html=True)
+
+#------------------------------------------------------------------------------------------------------------------------------#
 
 
-
-            # #------ adding speed variation for english --------
-            # words = full_response.split()
-            # speed = 2
-            # delay_per_word = 1.0 / speed
-            # displayed_message = ""
-            # for word in words:
-            #     displayed_message += word + " "
-            #     formatted_message = format_response(displayed_message) # Format for bullet points
-            #     message_placeholder.markdown(formatted_message)
-            #     time.sleep(delay_per_word)  # Wait for calculated delay time
-
-            # #------ end speed variation for english --------
-
-            #------ adding speed variation for Chinese --------
-            full_response = format_response(full_response)  # Format for bullet points
-            chars = list(full_response)
-            # speed = 20  # Display 5 Chinese characters per second
-            delay_per_char = 1.0 / speed
-            displayed_message = ""
-            waiting_message.empty()
-            for char in chars:
-                displayed_message += char
-                message_placeholder.markdown(displayed_message)
-                time.sleep(delay_per_char)  # Wait for calculated delay time
-
-            #------ end speed variation for Chinese --------
+            
 
 
             st.session_state.messages.append(
