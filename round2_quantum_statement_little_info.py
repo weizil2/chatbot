@@ -53,7 +53,7 @@ def update_typing_animation(placeholder, current_dots):
 
 
 # Handling message input and response
-max_messages = 30  # 10 iterations of conversation (user + assistant)
+max_messages = 20  # 10 iterations of conversation (user + assistant)
 
 if len(st.session_state.messages) < max_messages:
     
