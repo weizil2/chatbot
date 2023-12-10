@@ -60,6 +60,7 @@ if len(st.session_state.messages) < max_messages:
     user_input = st.chat_input("")
     if not st.session_state.first_message_sent:
         st.markdown(
+            "<strong>任务一：参与课堂讨论</strong><br>在课堂讨论中，你的自由度较大，既可以选择从一个角度深入探讨，也可以介绍多个维度或学科的观点，还可以将“我思故我在”与大学生日常生活相关联。<br><br>"
             "您可以通过复制粘贴<br>"
             "<span style='color: #8B0000;'>“我思故我在”的核心思想是什么？</span><br>"
             "到下面👇🏻的对话框，开启和聊天机器人的对话，寻求建议和帮助。", unsafe_allow_html=True

@@ -60,6 +60,7 @@ if len(st.session_state.messages) < max_messages:
     user_input = st.chat_input("")
     if not st.session_state.first_message_sent:
         st.markdown(
+            "<strong>任务二：策划科普节目</strong><br>在科普节目策划会议上，你将发言，与同事一起讨论呈现哪些与量子力学有关的知识点，以何种巧妙而有趣的方式呈现，并考虑如何使用生活中的例子。<br><br>"
             "您可以通过复制粘贴<br>"
             "<span style='color: #8B0000;'>什么是量子力学？</span><br>"
             "到下面👇🏻的对话框，开启和聊天机器人的对话，寻求建议和帮助。", unsafe_allow_html=True
