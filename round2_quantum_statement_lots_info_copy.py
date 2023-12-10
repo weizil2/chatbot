@@ -3,7 +3,7 @@ import streamlit as st
 import time
 import re  # Import regular expressions
 
-st.title("智能机器人")
+st.subheader("智能机器人")
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 assistant_id = 'asst_jvBqfnkM7ALZS2Wag4qmGFgy'
 speed = 30

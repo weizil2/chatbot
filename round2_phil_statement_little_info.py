@@ -3,7 +3,7 @@ import streamlit as st
 import time
 import re  # Import regular expressions
 
-st.title("智能机器人")
+st.subheader("智能机器人")
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 assistant_id = 'asst_PPS7tQ19erqUpgMtQfdbdzHC'
 speed = 30
@@ -61,7 +61,7 @@ if len(st.session_state.messages) < max_messages:
     if not st.session_state.first_message_sent:
         st.markdown(
             "您可以通过复制粘贴<br>"
-            "<span style='color: #8B0000;'>“我思故我在”表达什么？</span><br>"
+            "<span style='color: #8B0000;'>“我思故我在”的核心思想是什么？</span><br>"
             "到下面👇🏻的对话框，开启和聊天机器人的对话，寻求建议和帮助。", unsafe_allow_html=True
         )
     if user_input:
