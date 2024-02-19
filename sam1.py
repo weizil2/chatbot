@@ -76,7 +76,7 @@ if len(st.session_state.messages) < max_messages:
         st.markdown(
             "<img src= " + chatbot_avatar + " width='120'><br>"
             "You can say something like <br>"
-            "<span style='color: #8B0000;'> Hi Samuel, let's chat! </span><br>"
+            "<span style='color: #8B0000;'> Hi Sam, let's chat! </span><br>"
             "to the chatbox below and start the conversation", unsafe_allow_html=True
         )
     if user_input:
