@@ -6,7 +6,7 @@ import re  # Import regular expressions
 st.title("Hi, I am Samuel")
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY6"])
 assistant_id = "asst_pCWB0zNrSewCkuOR9YwRWf3A"
-speed = 30
+speed = 50
 
 
 chatbot_avatar = "https://i0.imgs.ovh/2024/02/18/oOlEJ.png"
