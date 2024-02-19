@@ -3,14 +3,13 @@ import streamlit as st
 import time
 import re  # Import regular expressions
 
-st.title("Hi, I am Samuel")
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY4"])
-assistant_id = "asst_lBXVK7KAuXOcKoHXvkg1sPs6"
+st.title("Hi, I am Samantha")
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+assistant_id = "asst_wgbbdqYFsv6kpsf8ts7INm7d"
 speed = 30
 
 
-chatbot_avatar = "https://i0.imgs.ovh/2024/02/18/oOlEJ.png"
-
+chatbot_avatar = "https://i0.imgs.ovh/2024/01/31/KQVqp.png"
 
 # necessary parts for the chatbot
 if "thread_id" not in st.session_state:
@@ -43,7 +42,7 @@ def local_css(file_name):
 local_css("style.css")
 # st.sidebar.markdown("#### When you finish the conversation, please copy and paste this conversation to the questionnaire.\n:star: Please do not paste it to the chatbot page")
 # st.sidebar.info(st.session_state.thread_id)
-# st.sidebar.caption("Please copy this conversation code")
+# st.sidebar.caption("Please copy this conversaton code")
 
 # Typing animation waiting for response
 def update_typing_animation(placeholder, current_dots):
@@ -70,13 +69,14 @@ if len(st.session_state.messages) < max_messages:
             "### Please feel free to continue your conversation. When you're done, copy and paste this conversation code below back to the [questionnaire]. \n:star: Please do not paste it to the conversation")
         st.sidebar.info(st.session_state.thread_id)
         st.sidebar.markdown ("### Once pasted to the questionnaire, you can safely close this page and go back to complete the rest of the questions. ")
+
     
     user_input = st.chat_input("")
     if not st.session_state.first_message_sent:
         st.markdown(
             "<img src= " + chatbot_avatar + " width='120'><br>"
             "You can say something like <br>"
-            "<span style='color: #8B0000;'> Hi Samuel, let's chat! </span><br>"
+            "<span style='color: #8B0000;'> Hi Samantha, let's chat! </span><br>"
             "to the chatbox below and start the conversation", unsafe_allow_html=True
         )
     if user_input:
@@ -175,7 +175,7 @@ else:
     st.sidebar.markdown(
         "#### When you finish the conversation, please copy and paste this conversation to the questionnaire.\n:star: Please do not paste it to the chatbot page")
     st.sidebar.info(st.session_state.thread_id)
-    st.sidebar.caption("Please copy this conversaton code")
+    st.sidebar.caption("Please copy this conversation code")
     if user_input:= st.chat_input(""):
         with st.chat_message("user"):
             st.markdown(user_input)
@@ -189,7 +189,6 @@ else:
 
 
 
-#----------------------------------------------
     # Button to copy thread ID
     # if st.button("Copy thread_id"):
     #     st.session_state.show_thread_id = True
