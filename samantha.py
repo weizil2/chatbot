@@ -5,12 +5,13 @@ import re  # Import regular expressions
 
 st.title("Hi, I am Samantha")
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
-assistant_id = "asst_V6hcPbmmASxYzLP8lqXZkFCl"
+assistant_id = "asst_wgbbdqYFsv6kpsf8ts7INm7d"
 speed = 30
 
 
+chatbot_avatar = "https://i0.imgs.ovh/2024/01/31/KQVqp.png"
 
-
+# necessary parts for the chatbot
 if "thread_id" not in st.session_state:
     thread = client.beta.threads.create()
     st.session_state.thread_id = thread.id
@@ -28,16 +29,17 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"], unsafe_allow_html=True)
 
-
+# chatbot text input area
 def local_css(file_name):
     with open(file_name) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
+# sidebar
 local_css("style.css")
-st.sidebar.markdown("#### When you finish the conversation, please copy and paste this conversation to the quesionnaire.\n:star: Please do not paste it to the chatbot page")
-st.sidebar.info(st.session_state.thread_id)
-st.sidebar.caption("Please copy this conversaton code")
+# st.sidebar.markdown("#### When you finish the conversation, please copy and paste this conversation to the questionnaire.\n:star: Please do not paste it to the chatbot page")
+# st.sidebar.info(st.session_state.thread_id)
+# st.sidebar.caption("Please copy this conversaton code")
 
+# Typing animation waiting for response
 def update_typing_animation(placeholder, current_dots):
     """
     Updates the placeholder with the next stage of the typing animation.
@@ -52,16 +54,23 @@ def update_typing_animation(placeholder, current_dots):
 
 
 
-# Handling message input and response
-max_messages = 30  # 10 iterations of conversation (user + assistant)
+# Max message; Handling message input and response
+min_messages = 20
+max_messages = 50  # 10 iterations of conversation (user + assistant)
 
 if len(st.session_state.messages) < max_messages:
+    if len(st.session_state.messages) >= min_messages:
+        st.sidebar.markdown(
+            "#### When you finish the conversation, please copy and paste this conversation back to the [questionnaire].\n:star: Please do not paste it to the chatbot conversation")
+        st.sidebar.info(st.session_state.thread_id)
+        st.sidebar.caption("⬆️Please copy this conversation code")
     
     user_input = st.chat_input("")
     if not st.session_state.first_message_sent:
         st.markdown(
+            "<img src= " + chatbot_avatar + " width='120'><br>"
             "You can say something like <br>"
-            "<span style='color: #8B0000;'> Samantha, I need someone to talk to </span><br>"
+            "<span style='color: #8B0000;'> Hi Samantha, let's chat! </span><br>"
             "to the chatbox below and start the conversation", unsafe_allow_html=True
         )
     if user_input:
@@ -71,12 +80,12 @@ if len(st.session_state.messages) < max_messages:
         with st.chat_message("user"):
             st.markdown(user_input)
 
-        with st.chat_message("assistant"):
+        with st.chat_message("assistant", avatar = chatbot_avatar):
             message_placeholder = st.empty()
             waiting_message = st.empty()  # Create a new placeholder for the waiting message
             dots = 0
-
-#------------------------------------------------------------------------------------------------------------------------------#
+#format the response
+#erro message------------------------------------------------------------------------------------------------------------------------------#
             def format_response(response):
                 """
                 Formats the response to handle bullet points and new lines.
@@ -97,7 +106,8 @@ if len(st.session_state.messages) < max_messages:
                 formatted_response = '\n'.join(formatted_lines)
 
                 return formatted_response.strip()
-        
+
+#simultaneous use/internet issues/
             import time
             max_attempts = 2
             attempt = 0
@@ -137,7 +147,7 @@ if len(st.session_state.messages) < max_messages:
                     else:
                         error_message_html = """
                             <div style='display: inline-block; border:2px solid red; padding: 4px; border-radius: 5px; margin-bottom: 20px; color: red;'>
-                                <strong>网络错误:</strong> 请重试。
+                                <strong>Network error:</strong> Please try again。
                             </div>
                             """
                         full_response = error_message_html
@@ -149,30 +159,34 @@ if len(st.session_state.messages) < max_messages:
 
             
 
-
+# max message reached
             st.session_state.messages.append(
                 {"role": "assistant", "content": full_response}
             )
 
-else:
 
+else:
+    st.sidebar.markdown(
+        "#### When you finish the conversation, please copy and paste this conversation to the questionnaire.\n:star: Please do not paste it to the chatbot page")
+    st.sidebar.info(st.session_state.thread_id)
+    st.sidebar.caption("Please copy this conversaton code")
     if user_input:= st.chat_input(""):
         with st.chat_message("user"):
             st.markdown(user_input)
-        
 
-    
-        with st.chat_message("assistant"):
+        with st.chat_message("assistant",avatar=chatbot_avatar):
             message_placeholder = st.empty()
             message_placeholder.info(
-                "You have reached the maximum round of conversation with Samantha，please copy the thread_id from the side column and paste the thread_id to the textbox below."
+                "You have reached the maximum round of conversations with Samantha，please copy the thread_id from the side column and paste the thread_id to the textbox below."
             )
     st.chat_input(disabled=True)
 
-    # # Button to copy thread ID
+
+
+    # Button to copy thread ID
     # if st.button("Copy thread_id"):
     #     st.session_state.show_thread_id = True
-
+    #
     # # When thread ID is shown, update the flag to hide the input box
     # if st.session_state.get('show_thread_id', False):
     #     st.session_state['thread_id_shown'] = True  # Set the flag to hide the input box
