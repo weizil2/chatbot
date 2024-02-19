@@ -9,7 +9,7 @@ assistant_id = "asst_gJgtOv3AfenpgV6AYiAZggPC"
 speed = 30
 
 
-chatbot_avatar = "https://i0.imgs.ovh/2024/02/18/o16FV.png"
+chatbot_avatar = "https://i0.imgs.ovh/2024/02/18/o1WhJ.png"
 
 
 # necessary parts for the chatbot
